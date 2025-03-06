@@ -7,6 +7,7 @@ package CW_gol;
  * @author Logan White
  */
 public class CellHandler implements Runnable {
+    private boolean isPaused;
     /**
      * Creates a new CellHandler object
      *
@@ -17,7 +18,21 @@ public class CellHandler implements Runnable {
      * @param yMax The end of the range (inclusive) of cells to handle on the y-axis
      */
     public CellHandler(boolean[][] cellMatrix, int xMin, int xMax, int yMin, int yMax) {
-        
+        isPaused = true; 
+    }
+
+    /**
+     * Stops the thread from doing work until unpause() is called
+     */
+    public void pause() {
+        isPaused = true;
+    }
+
+    /**
+     * Tells the thread to do work until pause() is called
+     */
+    public void unpause() {
+        isPaused = false;
     }
 
     @Override
