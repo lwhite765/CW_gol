@@ -1,5 +1,6 @@
 package CW_gol;
 
+import java.awt.Color;
 import java.awt.event.ActionListener;
 
 /**
@@ -12,6 +13,11 @@ public class Main {
         final String TITLE = "Conway's game of life";
         final int WIDTH = 100;
         final int HEIGHT = 100;
+        final Color DEAD_COLOUR = Color.WHITE;
+        final Color ALIVE_COLOUR = Color.BLACK;
+
+
+        Grid grid = new Grid(WIDTH, HEIGHT, ALIVE_COLOUR, DEAD_COLOUR);
 
         // Create CellHandler's
         CellHandler cellHandler = new CellHandler(grid.getCellMatrix(), 0, WIDTH,
@@ -36,7 +42,6 @@ public class Main {
         };
 
         // Create JComponents
-        Grid grid = new Grid(WIDTH, HEIGHT);
         ControlPad controlPad = new ControlPad(startCallback, stopCallback, 
                 resetCallback, closeCallback);
 
