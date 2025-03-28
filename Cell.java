@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import javax.swing.JPanel;
 import java.awt.Graphics2D;
+import javax.swing.BorderFactory;
 
 /**
  * A class which extends JPanel and represents a cell in the grid
@@ -23,13 +24,17 @@ public class Cell extends JPanel {
      * @param y The xPos of this cell in the matrix
      * @param deadColour The colour of the cell when it is dead
      * @param aliveColour The colour of the cell when it is alive
+     * @param borderColour The colour of the cell's border
      */
-    public Cell(boolean[][] cellMatrix, int x, int y, Color deadColour, Color aliveColour) {
+    public Cell(boolean[][] cellMatrix, int x, int y, Color aliveColour, Color deadColour, 
+            Color borderColour) {
         this.x = x;
         this.y = y;
         this.cellMatrix = cellMatrix;
         this.aliveColour = aliveColour;
         this.deadColour = deadColour;
+
+        this.setBorder(BorderFactory.createLineBorder(borderColour));
     }
 
     @Override

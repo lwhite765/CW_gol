@@ -1,6 +1,7 @@
 package CW_gol;
 
 import java.awt.Color;
+import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 
 /**
@@ -15,9 +16,10 @@ public class Main {
         final int HEIGHT = 100;
         final Color DEAD_COLOUR = Color.WHITE;
         final Color ALIVE_COLOUR = Color.BLACK;
+        final Color BORDER_COLOUR = Color.GRAY;
 
 
-        Grid grid = new Grid(WIDTH, HEIGHT, ALIVE_COLOUR, DEAD_COLOUR);
+        Grid grid = new Grid(WIDTH, HEIGHT, ALIVE_COLOUR, DEAD_COLOUR, BORDER_COLOUR);
 
         // Create CellHandler's
         CellHandler cellHandler = new CellHandler(grid.getCellMatrix(), 0, WIDTH,
@@ -47,9 +49,8 @@ public class Main {
 
 
         Component components[] = {
-            // TODO handle layouts
-            new Component(grid, ""),
-            new Component(controlPad, ""),
+            new Component(controlPad, BorderLayout.NORTH),
+            new Component(grid, BorderLayout.CENTER),
         };
 
         new MainFrame(components, TITLE);
