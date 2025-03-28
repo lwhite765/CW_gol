@@ -50,7 +50,7 @@ public class Main {
 
         Component components[] = {
             new Component(controlPad, BorderLayout.NORTH),
-            new Component(grid, BorderLayout.CENTER),
+            new Component(grid, BorderLayout.SOUTH),
         };
 
         new MainFrame(components, TITLE);
