@@ -1,3 +1,5 @@
+package CW_gol;
+
 import javax.swing.JComponent;
 
 public class Component {
@@ -5,7 +7,7 @@ public class Component {
    private String position;
     public Component(JComponent core, String position) {
         this.core = core;
-        this.positon = position;
+        this.position = position;
     }
 
     public JComponent getCore() {

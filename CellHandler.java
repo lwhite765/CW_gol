@@ -52,7 +52,12 @@ public class CellHandler implements Runnable {
         synchronized (cellMatrix) {
             // Handle pause
             if (isPaused) {
-                wait();
+                try {
+                    wait();
+                }
+                catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
             for (int i = 0; i < cellMatrix.length; i++) {
                 for (int j = 0; j < cellMatrix[0].length; j++) {

@@ -26,7 +26,7 @@ public class Grid extends JPanel {
         cellMatrix = new boolean[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                Cell cell = new Cell(() -> cellMatrix[i][j], aliveColour, deadColor);
+                Cell cell = new Cell(cellMatrix, i, j, aliveColour, deadColor);
                 add(cell);
             }
         }

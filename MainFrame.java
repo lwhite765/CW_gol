@@ -1,3 +1,5 @@
+package CW_gol;
+
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 

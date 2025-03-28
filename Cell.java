@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import javax.swing.JPanel;
 import java.awt.Graphics2D;
-import java.util.function.BooleanSupplier;
 
 /**
  * A class which extends JPanel and represents a cell in the grid
@@ -13,17 +12,22 @@ import java.util.function.BooleanSupplier;
  * @author Logan White
  */
 public class Cell extends JPanel {
-    private BooleanSupplier aliveSupplier;
+    private boolean cellMatrix[][];
+    private int x, y;
     private Color aliveColour, deadColour;
     /**
      * Creates a new Cell object
      *
-     * @param aliveSupplier A boolean supplier which says if the cell is alive or not
+     * @param cellMatrix The cell matrix to get from
+     * @param x The xPos of this cell in the matrix
+     * @param y The xPos of this cell in the matrix
      * @param deadColour The colour of the cell when it is dead
      * @param aliveColour The colour of the cell when it is alive
      */
-    public Cell(BooleanSupplier aliveSupplier, Color deadColour, Color aliveColour) {
-        this.aliveSupplier = aliveSupplier; 
+    public Cell(boolean[][] cellMatrix, int x, int y, Color deadColour, Color aliveColour) {
+        this.x = x;
+        this.y = y;
+        this.cellMatrix = cellMatrix;
         this.aliveColour = aliveColour;
         this.deadColour = deadColour;
     }
@@ -32,7 +36,7 @@ public class Cell extends JPanel {
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D)g;
         // Draw alive colour if alive draw dead colour otherwise
-        if (aliveSupplier.getAsBoolean()) {
+        if (cellMatrix[x][y]) {
             g2d.setColor(aliveColour);
         }
         else {
