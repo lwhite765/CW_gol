@@ -35,6 +35,13 @@ public class Cell extends JPanel {
         this.deadColour = deadColour;
 
         this.setBorder(BorderFactory.createLineBorder(borderColour));
+
+        Runnable onClick = () -> {
+            cellMatrix[x][y] = !cellMatrix[x][y];
+            repaint();
+        };
+
+        this.addMouseListener(new CellMouseHandler(onClick));
     }
 
     @Override

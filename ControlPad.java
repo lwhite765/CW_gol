@@ -24,10 +24,9 @@ public class ControlPad extends JPanel {
      * @param startCallback The Callback to start the simulation
      * @param pauseCallback The Callback to pause the simulation
      * @param resetCallback The Callback to reset the simulation
-     * @param closeCallback The Callback to close the simulation
      */
     public ControlPad(ActionListener startCallback, ActionListener pauseCallback,
-        ActionListener resetCallback, ActionListener closeCallback) {
+        ActionListener resetCallback) {
         super(new GridLayout(ROWS, COLS));
 
         JButton startButton = new JButton(START_TEXT);
@@ -41,6 +40,11 @@ public class ControlPad extends JPanel {
         JButton resetButton = new JButton(RESET_TEXT);
         resetButton.addActionListener(resetCallback);
         add(resetButton);
+
+        // Makes more sense to put close callback here
+        ActionListener closeCallback = (ae) -> {
+            ((MainFrame)this.getRootPane().getParent()).dispose();
+        };
 
         JButton closeButton = new JButton(CLOSE_TEXT);
         closeButton.addActionListener(closeCallback);

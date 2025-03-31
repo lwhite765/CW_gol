@@ -17,6 +17,7 @@ public class Main {
         final Color DEAD_COLOUR = Color.WHITE;
         final Color ALIVE_COLOUR = Color.BLACK;
         final Color BORDER_COLOUR = Color.GRAY;
+        
 
 
         Grid grid = new Grid(WIDTH, HEIGHT, ALIVE_COLOUR, DEAD_COLOUR, BORDER_COLOUR);
@@ -34,18 +35,18 @@ public class Main {
             cellHandler.pause();
         };
 
-        // TODO implement reset and close
         final ActionListener resetCallback = (ae) -> {
-
-        };
-
-        final ActionListener closeCallback = (ae) -> {
-
+            boolean[][] cellMatrix = grid.getCellMatrix();
+            for (int i = 0; i < cellMatrix.length; i++) {
+                for (int j = 0; j < cellMatrix[0].length; j++) {
+                    cellMatrix[i][j] = false;
+                }
+            }
         };
 
         // Create JComponents
         ControlPad controlPad = new ControlPad(startCallback, stopCallback, 
-                resetCallback, closeCallback);
+                resetCallback);
 
 
         Component components[] = {
@@ -53,6 +54,6 @@ public class Main {
             new Component(grid, BorderLayout.SOUTH),
         };
 
-        new MainFrame(components, TITLE);
+        MainFrame mainFrame = new MainFrame(components, TITLE);
     }
 }
