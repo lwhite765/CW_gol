@@ -22,9 +22,11 @@ public class Main {
 
         Grid grid = new Grid(WIDTH, HEIGHT, ALIVE_COLOUR, DEAD_COLOUR, BORDER_COLOUR);
 
-        // Create CellHandler's
-        CellHandler cellHandler = new CellHandler(grid.getCellMatrix(), 0, WIDTH,
+        // Create CellHandler's and their threads
+        CellHandler cellHandler = new CellHandler(grid, 0, WIDTH,
                 0, HEIGHT);
+        Thread cellThread = new Thread(cellHandler);
+        cellThread.start();
 
         // Create callbacks
         final ActionListener startCallback = (ae) -> {
@@ -42,6 +44,7 @@ public class Main {
                     cellMatrix[i][j] = false;
                 }
             }
+            grid.repaint();
         };
 
         // Create JComponents

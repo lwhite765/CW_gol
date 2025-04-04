@@ -9,20 +9,23 @@ package CW_gol;
 public class CellHandler implements Runnable {
     private boolean isPaused;
     private boolean[][] cellMatrix;
+    private Grid mainGrid;
     private int xMin, xMax, yMin, yMax;
 
     /**
      * Creates a new CellHandler object
      *
      * @param cellMatrix A matrix of switches for each cell
+     * @param mainGrid The programs main Grid
      * @param xMin The start of the range (inclusive) of cells to handle on the x-axis
      * @param xMax The end of the range (inclusive) of cells to handle on the x-axis
      * @param yMin The start of the range (inclusive) of cells to handle on the y-axis
      * @param yMax The end of the range (inclusive) of cells to handle on the y-axis
      */
-    public CellHandler(boolean[][] cellMatrix, int xMin, int xMax, int yMin, int yMax) {
+    public CellHandler(Grid mainGrid, int xMin, int xMax, int yMin, int yMax) {
         isPaused = true; 
-        this.cellMatrix = cellMatrix;
+        this.cellMatrix = mainGrid.getCellMatrix();
+        this.mainGrid = mainGrid;
         this.xMin = xMin;
         this.xMax = xMax;
         this.yMin = yMin;
@@ -49,27 +52,41 @@ public class CellHandler implements Runnable {
      */
     @Override
     public void run() {
-        synchronized (cellMatrix) {
-            // Handle pause
-            if (isPaused) {
+        // Run forever
+        while (true) {
+            synchronized (this) {
+                // Handle pause
+                if (isPaused) {
+                    try {
+                        wait();
+                    }
+                    catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                // Short for cell matrix copy
+                boolean[][] cellMatCpy = cellMatrix.clone();
+                for (int i = 0; i < cellMatrix.length; i++) {
+                    for (int j = 0; j < cellMatrix[0].length; j++) {
+                        int livingCount = getLivingNeighbourCount(cellMatCpy, i, j);
+                        // Die via over and under population
+                        if (livingCount < 2 || livingCount > 3) {
+                            cellMatrix[i][j] = false;
+                        }
+                        // Make alive if exactly 3 neighbours
+                        else if (livingCount == 3) {
+                            cellMatrix[i][j] = true;
+                        }
+                    }
+                }
+
+                mainGrid.repaint();
+                // TODO replace with something perminent
                 try {
-                    wait();
+                    Thread.sleep(1000);
                 }
                 catch (InterruptedException e) {
                     throw new RuntimeException(e);
-                }
-            }
-            for (int i = 0; i < cellMatrix.length; i++) {
-                for (int j = 0; j < cellMatrix[0].length; j++) {
-                    int livingCount = getLivingNeighbourCount(i, j);
-                    // Die via over and under population
-                    if (livingCount < 2 || livingCount > 3) {
-                        cellMatrix[i][j] = false;
-                    }
-                    // Make alive if exactly 3 neighbours
-                    else if (livingCount == 3) {
-                        cellMatrix[i][j] = true;
-                    }
                 }
             }
         }
@@ -77,28 +94,28 @@ public class CellHandler implements Runnable {
 
     // Does exactly what the name says
     // Cells that are null are counted as zero 
-    private int getLivingNeighbourCount(int x, int y) {
+    private int getLivingNeighbourCount(boolean[][] matrix, int x, int y) {
         int count = 0;
         // Count upper three cells
         for (int i = x - 1; i <= x + 1; i++) {
-            if (getCB(i, y + 1)) {
+            if (getCB(matrix, i, y + 1)) {
                 count++;
             }
         }
         
         // Count lower three cells
         for (int i = x - 1; i <= x + 1; i++) {
-            if (getCB(i, y - 1)) {
+            if (getCB(matrix, i, y - 1)) {
                 count++;
             }
         }
 
         // Count cells directly left and right
-        if (getCB(x - 1, y)) {
+        if (getCB(matrix, x - 1, y)) {
             count++;
         }
         
-        if (getCB(x + 1, y)) {
+        if (getCB(matrix, x + 1, y)) {
             count++;
         }
 
@@ -107,12 +124,12 @@ public class CellHandler implements Runnable {
 
     // Method name is short for get while checking bounds
     // it returns false if the cell DNE
-    private boolean getCB(int x, int y) {
-        if (x < 0 || y < 0 || x >= cellMatrix.length || y >= cellMatrix[0].length) {
+    private boolean getCB(boolean[][] matrix, int x, int y) {
+        if (x < 0 || y < 0 || x >= matrix.length || y >= matrix[0].length) {
             return false;
         }
         else {
-            return cellMatrix[x][y];
+            return matrix[x][y];
         }
     }
 }
