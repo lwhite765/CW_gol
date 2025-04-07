@@ -65,7 +65,11 @@ public class CellHandler implements Runnable {
                     }
                 }
                 // Short for cell matrix copy
-                boolean[][] cellMatCpy = cellMatrix.clone();
+                boolean[][] cellMatCpy = new boolean[cellMatrix.length][];
+                for (int i = 0; i < cellMatCpy.length; i++) {
+                    cellMatCpy[i] = cellMatrix[i].clone();
+                }
+
                 for (int i = 0; i < cellMatrix.length; i++) {
                     for (int j = 0; j < cellMatrix[0].length; j++) {
                         int livingCount = getLivingNeighbourCount(cellMatCpy, i, j);
@@ -83,7 +87,7 @@ public class CellHandler implements Runnable {
                 mainGrid.repaint();
                 // TODO replace with something perminent
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 }
                 catch (InterruptedException e) {
                     throw new RuntimeException(e);
