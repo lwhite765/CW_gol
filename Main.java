@@ -14,6 +14,9 @@ public class Main {
         final String TITLE = "Conway's game of life";
         final int WIDTH = 100;
         final int HEIGHT = 100;
+        final int THREADS_PER_X = 10; // Best if WIDTH can be evenly divided by this number
+        final int THREADS_PER_Y = 10; // Best if HEIGHT can be evenly divided by this number
+
         final Color DEAD_COLOUR = Color.WHITE;
         final Color ALIVE_COLOUR = Color.BLACK;
         final Color BORDER_COLOUR = Color.GRAY;
@@ -21,20 +24,31 @@ public class Main {
 
 
         Grid grid = new Grid(WIDTH, HEIGHT, ALIVE_COLOUR, DEAD_COLOUR, BORDER_COLOUR);
+        CellHandler[] cellHandlers = new CellHandler[THREADS_PER_X * THREADS_PER_Y];
 
         // Create CellHandler's and their threads
-        CellHandler cellHandler = new CellHandler(grid, 0, WIDTH,
-                0, HEIGHT);
-        Thread cellThread = new Thread(cellHandler);
-        cellThread.start();
-
+        final int X_JUMP = WIDTH/THREADS_PER_X;
+        final int Y_JUMP = HEIGHT/THREADS_PER_Y;
+        for (int i = 0; i < THREADS_PER_X; i++) {
+            for (int j = 0; j < THREADS_PER_Y; j++) {
+                // Conver 2D index into 1D index
+                cellHandlers[i + j * THREADS_PER_X] = new CellHandler(grid, i * X_JUMP, 
+                    (i + 1) * X_JUMP, j * Y_JUMP, (j + 1) * Y_JUMP);
+                Thread cellThread = new Thread(cellHandlers[i + j * THREADS_PER_X]);
+                cellThread.start();
+            }
+        }
         // Create callbacks
         final ActionListener startCallback = (ae) -> {
-            cellHandler.unpause();
+            for (int i = 0; i < cellHandlers.length; i++) {
+                cellHandlers[i].unpause();
+            }
         };
 
         final ActionListener stopCallback = (ae) -> {
-            cellHandler.pause();
+            for (int i = 0; i < cellHandlers.length; i++) {
+                cellHandlers[i].pause();
+            }
         };
 
         final ActionListener resetCallback = (ae) -> {
