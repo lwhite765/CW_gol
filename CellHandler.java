@@ -18,9 +18,9 @@ public class CellHandler implements Runnable {
      * @param cellMatrix A matrix of switches for each cell
      * @param mainGrid The programs main Grid
      * @param xMin The start of the range (inclusive) of cells to handle on the x-axis
-     * @param xMax The end of the range (inclusive) of cells to handle on the x-axis
+     * @param xMax The end of the range (exclusive) of cells to handle on the x-axis
      * @param yMin The start of the range (inclusive) of cells to handle on the y-axis
-     * @param yMax The end of the range (inclusive) of cells to handle on the y-axis
+     * @param yMax The end of the range (exclusive) of cells to handle on the y-axis
      */
     public CellHandler(Grid mainGrid, int xMin, int xMax, int yMin, int yMax) {
         isPaused = true; 
@@ -70,8 +70,8 @@ public class CellHandler implements Runnable {
                     cellMatCpy[i] = cellMatrix[i].clone();
                 }
 
-                for (int i = 0; i < cellMatrix.length; i++) {
-                    for (int j = 0; j < cellMatrix[0].length; j++) {
+                for (int i = xMin; i < xMax; i++) {
+                    for (int j = yMin; j < yMax; j++) {
                         int livingCount = getLivingNeighbourCount(cellMatCpy, i, j);
                         // Die via over and under population
                         if (livingCount < 2 || livingCount > 3) {
