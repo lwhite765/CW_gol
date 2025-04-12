@@ -42,12 +42,13 @@ public class Main {
             
         };
         CyclicBarrier barrier = new CyclicBarrier(parties, barrierAction);
+        CyclicBarrier copyBarrier = new CyclicBarrier(parties);
 
         for (int i = 0; i < THREADS_PER_X; i++) {
             for (int j = 0; j < THREADS_PER_Y; j++) {
                 // Conver 2D index into 1D index
                 cellHandlers[i + j * THREADS_PER_X] = new CellHandler(grid, i * X_JUMP, 
-                    (i + 1) * X_JUMP, j * Y_JUMP, (j + 1) * Y_JUMP, barrier);
+                    (i + 1) * X_JUMP, j * Y_JUMP, (j + 1) * Y_JUMP, barrier, copyBarrier);
                 Thread cellThread = new Thread(cellHandlers[i + j * THREADS_PER_X]);
                 cellThread.start();
             }

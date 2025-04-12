@@ -16,7 +16,7 @@ public class CellHandler implements Runnable {
     private boolean[][] cellMatrix;
     private Grid mainGrid;
     private int xMin, xMax, yMin, yMax;
-    private final CyclicBarrier bar;
+    private final CyclicBarrier bar, copyBar;
 
     // Short for cell matrix copy
     private boolean[][] cellMatCpy;
@@ -31,7 +31,7 @@ public class CellHandler implements Runnable {
      * @param yMax       The end of the range (exclusive) of cells to handle on the y-axis
      * @param bar
      */
-    public CellHandler(Grid mainGrid, int xMin, int xMax, int yMin, int yMax, CyclicBarrier bar) {
+    public CellHandler(Grid mainGrid, int xMin, int xMax, int yMin, int yMax, CyclicBarrier bar, CyclicBarrier copyBar) {
         isPaused = true; 
         this.cellMatrix = mainGrid.getCellMatrix();
         this.mainGrid = mainGrid;
@@ -40,10 +40,8 @@ public class CellHandler implements Runnable {
         this.yMin = yMin;
         this.yMax = yMax;
         this.bar = bar;
-
-        if (cellMatCpy == null) {
-            copyCellMatrix();
-        }
+        this.copyBar = copyBar;
+        copyCellMatrix();
     }
 
     /**
@@ -80,6 +78,13 @@ public class CellHandler implements Runnable {
                 }
 
                 copyCellMatrix();
+                try{
+                    copyBar.await();
+                }
+                catch (InterruptedException | BrokenBarrierException e){
+                    throw new RuntimeException(e);
+                }
+
                 for (int i = xMin; i < xMax; i++) {
                     for (int j = yMin; j < yMax; j++) {
                         int livingCount = getLivingNeighbourCount(cellMatCpy, i, j);
@@ -151,8 +156,8 @@ public class CellHandler implements Runnable {
 
     // Copys the contents of CellMatrix to CellMatCpy
     public void copyCellMatrix() {
-        cellMatCpy = new boolean[cellMatrix.length][];
-        for (int i = 0; i < cellMatCpy.length; i++) {
+        cellMatCpy = new boolean[cellMatrix.length][cellMatrix[0].length];
+        for (int i = 0; i < cellMatrix.length; i++) {
             cellMatCpy[i] = cellMatrix[i].clone();
         }
     }
