@@ -8,6 +8,7 @@ public class MainFrame extends JFrame {
     super(title);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
+
     for (Component comp_object : components ){
         add(comp_object.getCore(), comp_object.getPosition());
     }
