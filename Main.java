@@ -23,6 +23,9 @@ public class Main {
         final Color ALIVE_COLOUR = Color.BLACK;
         final Color BORDER_COLOUR = Color.GRAY;
 
+        final Color BUTTON_FOREGROUND = Color.WHITE;
+        final Color BUTTON_BACKGROUND = Color.DARK_GRAY;
+
         Grid grid = new Grid(WIDTH, HEIGHT, ALIVE_COLOUR, DEAD_COLOUR, BORDER_COLOUR);
         CellHandler[] cellHandlers = new CellHandler[THREADS_PER_X * THREADS_PER_Y];
 
@@ -78,7 +81,7 @@ public class Main {
 
         // Create JComponents
         ControlPad controlPad = new ControlPad(startCallback, stopCallback, 
-                resetCallback);
+                resetCallback, BUTTON_FOREGROUND, BUTTON_BACKGROUND);
 
 
         Component components[] = {
