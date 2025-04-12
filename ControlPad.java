@@ -16,7 +16,6 @@ public class ControlPad extends JPanel {
     private static final String START_TEXT = "Start";
     private static final String PAUSE_TEXT = "Pause";
     private static final String RESET_TEXT = "Reset";
-    private static final String CLOSE_TEXT = "Close";
 
     /**
      * Creates a new ControlPad object
@@ -40,14 +39,5 @@ public class ControlPad extends JPanel {
         JButton resetButton = new JButton(RESET_TEXT);
         resetButton.addActionListener(resetCallback);
         add(resetButton);
-
-        // Makes more sense to put close callback here
-        ActionListener closeCallback = (ae) -> {
-            ((MainFrame)this.getRootPane().getParent()).dispose();
-        };
-
-        JButton closeButton = new JButton(CLOSE_TEXT);
-        closeButton.addActionListener(closeCallback);
-        add(closeButton);
     }
 }

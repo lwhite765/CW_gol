@@ -15,8 +15,7 @@ public class CellHandler implements Runnable {
     private boolean isPaused;
     private boolean[][] cellMatrix;
     private Grid mainGrid;
-    private int xMin, xMax, yMin, yMax;
-    private final CyclicBarrier bar, copyBar;
+    private int xMin, xMax, yMin, yMax; private final CyclicBarrier bar, copyBar;
 
     // Short for cell matrix copy
     private boolean[][] cellMatCpy;
@@ -104,11 +103,6 @@ public class CellHandler implements Runnable {
                 catch (InterruptedException | BrokenBarrierException e){
                     throw new RuntimeException(e);
                 }
-
-                //mainGrid.repaint();
-                // TODO replace with something perminent
-                /*
-                */
             }
         }
     }
@@ -155,7 +149,7 @@ public class CellHandler implements Runnable {
     }
 
     // Copys the contents of CellMatrix to CellMatCpy
-    public void copyCellMatrix() {
+    private void copyCellMatrix() {
         cellMatCpy = new boolean[cellMatrix.length][cellMatrix[0].length];
         for (int i = 0; i < cellMatrix.length; i++) {
             cellMatCpy[i] = cellMatrix[i].clone();
