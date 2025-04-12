@@ -15,7 +15,8 @@ public class CellHandler implements Runnable {
     private boolean isPaused;
     private boolean[][] cellMatrix;
     private Grid mainGrid;
-    private int xMin, xMax, yMin, yMax; private final CyclicBarrier bar, copyBar;
+    private int xMin, xMax, yMin, yMax; 
+    private final CyclicBarrier bar, copyBar;
 
     // Short for cell matrix copy
     private boolean[][] cellMatCpy;
