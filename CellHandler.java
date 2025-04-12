@@ -1,28 +1,37 @@
 package CW_gol;
 
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+
 /** 
  * A class used for handling a thread that manages a block
  * of cells
  *
  * @author Logan White
+ * @author Anupriya Shaju
  */
 public class CellHandler implements Runnable {
     private boolean isPaused;
     private boolean[][] cellMatrix;
     private Grid mainGrid;
     private int xMin, xMax, yMin, yMax;
+    private final CyclicBarrier bar, copyBar;
+
+    // Short for cell matrix copy
+    private boolean[][] cellMatCpy;
 
     /**
      * Creates a new CellHandler object
      *
-     * @param cellMatrix A matrix of switches for each cell
-     * @param mainGrid The programs main Grid
-     * @param xMin The start of the range (inclusive) of cells to handle on the x-axis
-     * @param xMax The end of the range (inclusive) of cells to handle on the x-axis
-     * @param yMin The start of the range (inclusive) of cells to handle on the y-axis
-     * @param yMax The end of the range (inclusive) of cells to handle on the y-axis
+     * @param mainGrid   The programs main Grid
+     * @param xMin       The start of the range (inclusive) of cells to handle on the x-axis
+     * @param xMax       The end of the range (exclusive) of cells to handle on the x-axis
+     * @param yMin       The start of the range (inclusive) of cells to handle on the y-axis
+     * @param yMax       The end of the range (exclusive) of cells to handle on the y-axis
+     * @param bar
      */
-    public CellHandler(Grid mainGrid, int xMin, int xMax, int yMin, int yMax) {
+    public CellHandler(Grid mainGrid, int xMin, int xMax, int yMin, int yMax, CyclicBarrier bar, CyclicBarrier copyBar) {
         isPaused = true; 
         this.cellMatrix = mainGrid.getCellMatrix();
         this.mainGrid = mainGrid;
@@ -30,6 +39,9 @@ public class CellHandler implements Runnable {
         this.xMax = xMax;
         this.yMin = yMin;
         this.yMax = yMax;
+        this.bar = bar;
+        this.copyBar = copyBar;
+        copyCellMatrix();
     }
 
     /**
@@ -64,14 +76,17 @@ public class CellHandler implements Runnable {
                         throw new RuntimeException(e);
                     }
                 }
-                // Short for cell matrix copy
-                boolean[][] cellMatCpy = new boolean[cellMatrix.length][];
-                for (int i = 0; i < cellMatCpy.length; i++) {
-                    cellMatCpy[i] = cellMatrix[i].clone();
+
+                copyCellMatrix();
+                try{
+                    copyBar.await();
+                }
+                catch (InterruptedException | BrokenBarrierException e){
+                    throw new RuntimeException(e);
                 }
 
-                for (int i = 0; i < cellMatrix.length; i++) {
-                    for (int j = 0; j < cellMatrix[0].length; j++) {
+                for (int i = xMin; i < xMax; i++) {
+                    for (int j = yMin; j < yMax; j++) {
                         int livingCount = getLivingNeighbourCount(cellMatCpy, i, j);
                         // Die via over and under population
                         if (livingCount < 2 || livingCount > 3) {
@@ -83,15 +98,17 @@ public class CellHandler implements Runnable {
                         }
                     }
                 }
-
-                mainGrid.repaint();
-                // TODO replace with something perminent
-                try {
-                    Thread.sleep(500);
+                try{
+                    bar.await();
                 }
-                catch (InterruptedException e) {
+                catch (InterruptedException | BrokenBarrierException e){
                     throw new RuntimeException(e);
                 }
+
+                //mainGrid.repaint();
+                // TODO replace with something perminent
+                /*
+                */
             }
         }
     }
@@ -134,6 +151,14 @@ public class CellHandler implements Runnable {
         }
         else {
             return matrix[x][y];
+        }
+    }
+
+    // Copys the contents of CellMatrix to CellMatCpy
+    public void copyCellMatrix() {
+        cellMatCpy = new boolean[cellMatrix.length][cellMatrix[0].length];
+        for (int i = 0; i < cellMatrix.length; i++) {
+            cellMatCpy[i] = cellMatrix[i].clone();
         }
     }
 }
